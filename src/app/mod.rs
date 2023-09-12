@@ -1,7 +1,7 @@
 mod memath;
 mod modules;
 
-use crate::app::modules::{AdditionState, SubtractionState};
+use crate::app::modules::{AckermannState, AdditionState, SubtractionState};
 
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)]
@@ -54,6 +54,7 @@ struct Pane {
 enum Module {
     Addition(AdditionState),
     Subtraction(SubtractionState),
+    Ackermann(AckermannState),
 }
 
 struct TreeBehavior {}
@@ -70,6 +71,7 @@ impl egui_tiles::Behavior<Pane> for TreeBehavior {
         match module {
             Module::Addition(state) => state.render(ui),
             Module::Subtraction(state) => state.render(ui),
+            Module::Ackermann(state) => state.render(ui),
         };
 
         if ui
@@ -103,12 +105,22 @@ fn create_tree() -> egui_tiles::Tree<Pane> {
     });
 
     let minus = Pane {
-        nr: 1,
+        nr: 2,
         module: Module::Subtraction(SubtractionState::default()),
     };
 
     tabs.push({
         let children = tiles.insert_pane(minus);
+        tiles.insert_horizontal_tile(vec![children])
+    });
+
+    let ack = Pane {
+        nr: 1,
+        module: Module::Ackermann(AckermannState::default()),
+    };
+
+    tabs.push({
+        let children = tiles.insert_pane(ack);
         tiles.insert_horizontal_tile(vec![children])
     });
 
