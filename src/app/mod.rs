@@ -2,6 +2,7 @@ mod memath;
 mod modules;
 
 use crate::app::modules::{AckermannState, AdditionState, SubtractionState};
+use egui::WidgetText;
 
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)]
@@ -47,7 +48,7 @@ impl eframe::App for Math {
 }
 
 struct Pane {
-    nr: usize,
+    title: String,
     module: Module,
 }
 
@@ -85,7 +86,7 @@ impl egui_tiles::Behavior<Pane> for TreeBehavior {
     }
 
     fn tab_title_for_pane(&mut self, pane: &Pane) -> egui::WidgetText {
-        format!("Pane {}", pane.nr).into()
+        WidgetText::from(pane.title.clone())
     }
 }
 
@@ -95,7 +96,7 @@ fn create_tree() -> egui_tiles::Tree<Pane> {
     let mut tabs = vec![];
 
     let add = Pane {
-        nr: 0,
+        title: "Addition".into(),
         module: Module::Addition(AdditionState::default()),
     };
 
@@ -105,7 +106,7 @@ fn create_tree() -> egui_tiles::Tree<Pane> {
     });
 
     let minus = Pane {
-        nr: 2,
+        title: "Subtraction".into(),
         module: Module::Subtraction(SubtractionState::default()),
     };
 
@@ -115,7 +116,7 @@ fn create_tree() -> egui_tiles::Tree<Pane> {
     });
 
     let ack = Pane {
-        nr: 1,
+        title: "Ackermann".into(),
         module: Module::Ackermann(AckermannState::default()),
     };
 
