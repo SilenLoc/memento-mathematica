@@ -85,7 +85,7 @@ impl egui_tiles::Behavior<Pane> for TreeBehavior {
         }
     }
 
-    fn tab_title_for_pane(&mut self, pane: &Pane) -> egui::WidgetText {
+    fn tab_title_for_pane(&mut self, pane: &Pane) -> WidgetText {
         WidgetText::from(pane.title.clone())
     }
 }
