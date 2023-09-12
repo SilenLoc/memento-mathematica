@@ -1,4 +1,7 @@
-use egui::Ui;
+mod memath;
+mod modules;
+
+use crate::app::modules::{AdditionState, SubtractionState};
 
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)]
@@ -51,46 +54,6 @@ struct Pane {
 enum Module {
     Addition(AdditionState),
     Subtraction(SubtractionState),
-}
-
-#[derive(Default)]
-struct SubtractionState {
-    result: i32,
-    left: i32,
-    right: i32,
-}
-
-impl SubtractionState {
-    pub fn render(&mut self, ui: &mut Ui) {
-        ui.add(egui::Slider::new(&mut self.left, 0..=100));
-        ui.add(egui::Slider::new(&mut self.right, 0..=100));
-
-        if ui.button("subtract").clicked() {
-            self.result = self.left - self.right
-        }
-
-        ui.label(format!("Result {}", &self.result));
-    }
-}
-
-#[derive(Default)]
-struct AdditionState {
-    result: i32,
-    left: i32,
-    right: i32,
-}
-
-impl AdditionState {
-    pub fn render(&mut self, ui: &mut Ui) {
-        ui.add(egui::Slider::new(&mut self.left, 0..=100));
-        ui.add(egui::Slider::new(&mut self.right, 0..=100));
-
-        if ui.button("add").clicked() {
-            self.result = self.left + self.right
-        }
-
-        ui.label(format!("Result {}", &self.result));
-    }
 }
 
 struct TreeBehavior {}
