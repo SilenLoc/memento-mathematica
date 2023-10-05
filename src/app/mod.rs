@@ -1,8 +1,11 @@
-mod memath;
+mod functions;
+mod menu;
 mod modules;
 
+use crate::app::menu::menu;
 use crate::app::modules::{AckermannState, AdditionState, SubtractionState};
 use egui::WidgetText;
+use egui_tiles::Tile;
 
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)]
@@ -12,6 +15,9 @@ pub struct Math {
 
     #[serde(skip)]
     behavior: TreeBehavior,
+
+    #[serde(skip)]
+    command_center_open: bool,
 }
 
 impl Default for Math {
@@ -19,6 +25,7 @@ impl Default for Math {
         Self {
             behavior: TreeBehavior {},
             tree: create_tree(),
+            command_center_open: false,
         }
     }
 }
@@ -30,12 +37,34 @@ impl Math {
         }
         Default::default()
     }
+    fn close_menu(&mut self) {
+        self.command_center_open = false
+    }
+
+    fn add_pane(&mut self, pane: Pane) {
+        if let Some(root) = self.tree.root {
+            let new_tile_id = self.tree.tiles.insert_new(Tile::Pane(pane));
+            if let Tile::Container(cont) = self.tree.tiles.get_mut(root).unwrap() {
+                cont.add_child(new_tile_id)
+            }
+        }
+    }
 }
 
 impl eframe::App for Math {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         ctx.request_repaint();
         catppuccin_egui::set_theme(ctx, catppuccin_egui::MACCHIATO);
+
+        egui::TopBottomPanel::top("top").show(ctx, |ui| {
+            if ui.button("Tabs").clicked() {
+                self.command_center_open = !self.command_center_open
+            };
+
+            if self.command_center_open {
+                menu(ui, self)
+            }
+        });
         egui::CentralPanel::default().show(ctx, |ui| {
             let mut behavior = TreeBehavior {};
             self.tree.ui(&mut behavior, ui);
@@ -52,6 +81,7 @@ struct Pane {
     module: Module,
 }
 
+#[derive(Clone)]
 enum Module {
     Addition(AdditionState),
     Subtraction(SubtractionState),

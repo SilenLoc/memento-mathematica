@@ -1,8 +1,8 @@
-use crate::app::memath::{ack, addition, subtraction};
+use crate::app::functions::{ack, addition, subtraction};
 use bigdecimal::BigDecimal;
 use egui::Ui;
 
-#[derive(Default)]
+#[derive(Default, Clone)]
 pub struct SubtractionState {
     result: String,
     left: i32,
@@ -23,7 +23,7 @@ impl SubtractionState {
     }
 }
 
-#[derive(Default)]
+#[derive(Default, Clone)]
 pub struct AdditionState {
     result: String,
     left: i32,
@@ -44,7 +44,7 @@ impl AdditionState {
     }
 }
 
-#[derive(Default)]
+#[derive(Default, Clone)]
 pub struct AckermannState {
     result: String,
     m: i32,
